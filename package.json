@@ -1,0 +1,26 @@
+{
+  "name": "IntoTheBreachBot",
+  "version": "1.0.0",
+  "description": "A lightweight bot for the IntoTheBreach discord",
+  "main": "bot.js",
+  "scripts": {
+    "start": "node bot.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TheZeal/IntoTheBreachBot/"
+  },
+  "keywords": [
+    "discord",
+    "bot"
+  ],
+  "engines": {
+    "node": "5.1.1"
+  },
+  "dependencies": {
+    "discord.js": "^11.3.0",
+    "images": "^3.0.1",
+    "request": "^2.83.0"
+  }
+}
