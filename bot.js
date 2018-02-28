@@ -62,7 +62,7 @@ client.on('message', msg => {
 
 				opts = {};
 				opts.file = saveto;
-				msg.reply(" here is your overlayed board : ", opts).then( reply =>
+				msg.reply(" here is your overlayed board! ", opts).then( reply =>
 				{
 					fs.unlinkSync(to);
 					fs.unlinkSync(saveto);
