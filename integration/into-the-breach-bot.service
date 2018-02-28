@@ -1,0 +1,10 @@
+[Unit]
+Description=Into The Breach Bot Service
+Documentation=none yet
+
+[Service]
+ExecStart=/home/zeal/IntoTheBreachBot/integration/service.sh
+
+[Install]
+WantedBy=multi-user.target
+
