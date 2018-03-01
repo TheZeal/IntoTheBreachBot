@@ -28,7 +28,7 @@ client.on('message', msg => {
 
 	if(!msg.author.bot)
 	{
-	  if (msg.channel.name === 'strategy')
+	  if (msg.channel.name === 'strategy' || msg.channel.name.indexOf('spam')!=-1)
 	  {
 	  	url = '';
 	  	text = msg.content;
