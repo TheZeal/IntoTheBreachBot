@@ -31,6 +31,7 @@ client.on('message', msg => {
 	  	text = msg.content;
 	  	if(text.startsWith("overlay"))
 	  	{
+	  		uploaded = true
 	  		array = msg.attachments.array()
 	  		if(array.length != 0)
 	  		{
@@ -41,6 +42,7 @@ client.on('message', msg => {
 	  			sub = text.substring(8).trim();
 	  			console.log(sub)
 	  			url = sub;
+	  			uploaded = false;
 	  		}
 	  		lnum = num;
 	  		num++;
@@ -62,7 +64,7 @@ client.on('message', msg => {
 
 				opts = {};
 				opts.file = saveto;
-				msg.reply(" here is your overlayed board! ", opts).then( reply =>
+				msg.channel.send(uploaded ? ("["+ msg.author.username + "]" + msg.content.substring(8).trim()) : '', opts).then( reply =>
 				{
 					fs.unlinkSync(to);
 					fs.unlinkSync(saveto);
