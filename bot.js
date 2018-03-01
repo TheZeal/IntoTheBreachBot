@@ -20,7 +20,6 @@ var download = function(uri, filename, callback, message){
 };
 
 overlay = 'ressources/IntoTheBreachOverlay.png'
-saveto = 'ressources/output.jpg'
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
 });
@@ -57,9 +56,9 @@ client.on('message', msg => {
 	  			url = sub.substring(i).trim();
 	  			content = sub.substring(0, i).trim();
 	  		}
-	  		lnum = num;
-	  		num++;
-	  		to = 'ressources/tomerge_' + lnum;
+	  		var to = 'ressources/tomerge_' + num;
+	  		var saveto = 'ressources/output_' + num + ".jpg"
+	  		num++
 	  		download(url, to, function()
 		  	{
 				try
@@ -84,7 +83,7 @@ client.on('message', msg => {
 	  			}
 				opts = {};
 				opts.file = saveto;
-				msg.channel.send("["+ msg.author + "] " + content, opts).then( reply =>
+				msg.channel.send(msg.author + (content.length != 0 ? ': ' + content : ''), opts).then( reply =>
 				{
 					fs.unlinkSync(to);
 					fs.unlinkSync(saveto);
