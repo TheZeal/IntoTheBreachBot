@@ -6,11 +6,15 @@ request = require('request');
 var images = require("images");
 var token = require('./ressources/token.js').token;
 
-var download = function(uri, filename, callback){
+var download = function(uri, filename, callback, message){
   request.head(uri, function(err, res, body){
+  	if(!res)
+  	{
+  		message.channel.send(message.author + " Is this a real file? :thonking:");
+  		return;
+  	}
     console.log('content-type:', res.headers['content-type']);
     console.log('content-length:', res.headers['content-length']);
-
     request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
   });
 };
@@ -31,46 +35,62 @@ client.on('message', msg => {
 	  	text = msg.content;
 	  	if(text.startsWith("overlay"))
 	  	{
-	  		uploaded = true
 	  		array = msg.attachments.array()
 	  		if(array.length != 0)
 	  		{
 	  			url = array[0].url;
+	  			content = msg.content.substring(8).trim();
 	  		}
 	  		else 
 	  		{
 	  			sub = text.substring(8).trim();
-	  			console.log(sub)
-	  			url = sub;
-	  			uploaded = false;
+	  			i = sub.indexOf("http://");
+	  			if(i==-1)
+	  			{
+	  				i = sub.indexOf("https://")
+	  			}
+	  			if(i==-1)
+	  			{
+	  				msg.channel.send(msg.author + " This isn't a valid url!");
+	  				return;
+	  			}
+	  			url = sub.substring(i).trim();
+	  			content = sub.substring(0, i).trim();
 	  		}
 	  		lnum = num;
 	  		num++;
-	  		to = 'ressources/tomerge_' + lnum + '.png';
-	  		download(url, to, function(){
-				console.log('done');
-				image_to = images(to);
+	  		to = 'ressources/tomerge_' + lnum;
+	  		download(url, to, function()
+		  	{
+				try
+				{
+					image_to = images(to);
+				}
+				catch (err)
+				{
+						msg.channel.send(msg.author + " I'm pretty sure this isn't an image! You sneaky fox.");
+					return;
+				}
 				image_overlay = images(overlay).resize(image_to.width())
 				diff = (image_to.height() - image_overlay.height())/2
 	  			if(diff>0)
 	  			{
-	  				images(to).draw(image_overlay, 0, diff).save(saveto)
+		  			images(to).draw(image_overlay, 0, diff).save(saveto)
+		  		}
+		  		else
+		  		{
+		 			image_overlay = images(image_overlay, 0, -diff, image_to.width(), image_to.height())
+		 			images(to).draw(image_overlay, 0, 0).save(saveto)
 	  			}
-	  			else
-	  			{
-	  				image_overlay = images(image_overlay, 0, -diff, image_to.width(), image_to.height())
-	  				images(to).draw(image_overlay, 0, 0).save(saveto)
-	  			}
-
 				opts = {};
 				opts.file = saveto;
-				msg.channel.send(uploaded ? ("["+ msg.author.username + "]" + msg.content.substring(8).trim()) : '', opts).then( reply =>
+				msg.channel.send("["+ msg.author + "] " + content, opts).then( reply =>
 				{
 					fs.unlinkSync(to);
 					fs.unlinkSync(saveto);
 					msg.delete();
 				})
-			});
+			}, msg);
 	  	}
 	  }
 	}
